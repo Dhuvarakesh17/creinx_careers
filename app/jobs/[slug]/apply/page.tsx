@@ -50,14 +50,37 @@ const initialState: FormState = {
 export default function JobApplyPage() {
   const params = useParams<{ slug: string }>();
   const router = useRouter();
-  const job = getJobBySlug(params.slug);
+  const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
+  const storageKey = slug ? `apply-v2-${slug}` : null;
+  const job = slug ? getJobBySlug(slug) : undefined;
   const [form, setForm] = useState<FormState>(() => {
     if (typeof window === "undefined") {
       return initialState;
     }
-    const storageKey = `apply-${params.slug}`;
-    const stored = window.sessionStorage.getItem(storageKey);
-    return stored ? (JSON.parse(stored) as FormState) : initialState;
+    if (!storageKey) {
+      return initialState;
+    }
+    let stored: string | null = null;
+    try {
+      stored = window.sessionStorage.getItem(storageKey);
+    } catch {
+      return initialState;
+    }
+
+    if (!stored) {
+      return initialState;
+    }
+
+    try {
+      return JSON.parse(stored) as FormState;
+    } catch {
+      try {
+        window.sessionStorage.removeItem(storageKey);
+      } catch {
+        // Ignore storage cleanup failures in restricted browser contexts.
+      }
+      return initialState;
+    }
   });
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [workSample, setWorkSample] = useState<File | null>(null);
@@ -66,6 +89,10 @@ export default function JobApplyPage() {
   >("idle");
   const [error, setError] = useState("");
   const [referenceId, setReferenceId] = useState("");
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [slug]);
 
   useEffect(() => {
     if (status !== "success") {
@@ -80,8 +107,16 @@ export default function JobApplyPage() {
   }, [router, status]);
 
   useEffect(() => {
-    window.sessionStorage.setItem(`apply-${params.slug}`, JSON.stringify(form));
-  }, [form, params.slug]);
+    if (!storageKey) {
+      return;
+    }
+
+    try {
+      window.sessionStorage.setItem(storageKey, JSON.stringify(form));
+    } catch {
+      // Ignore storage write failures (e.g., private mode / restricted storage).
+    }
+  }, [form, storageKey]);
 
   if (!job) {
     return (
@@ -100,13 +135,16 @@ export default function JobApplyPage() {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
+  const isGmailAddress = form.email.toLowerCase().includes("@gmail.com");
+
   function isStepComplete(step: number) {
     if (step === 1) {
       return Boolean(
         form.name.trim() &&
         form.email.trim() &&
         form.phone.trim() &&
-        form.city.trim(),
+        form.city.trim() &&
+        isGmailAddress,
       );
     }
 
@@ -132,7 +170,7 @@ export default function JobApplyPage() {
 
   function getStepError(step: number) {
     if (step === 1) {
-      return "Please complete the required personal details before moving on.";
+      return "Please enter a Gmail address and complete the required personal details before moving on.";
     }
 
     if (step === 2) {
@@ -208,7 +246,13 @@ export default function JobApplyPage() {
 
     setReferenceId(`WS-${Date.now().toString().slice(-6)}`);
     setStatus("success");
-    window.sessionStorage.removeItem(`apply-${params.slug}`);
+    if (storageKey) {
+      try {
+        window.sessionStorage.removeItem(storageKey);
+      } catch {
+        // Ignore storage cleanup failures in restricted browser contexts.
+      }
+    }
   }
 
   return (

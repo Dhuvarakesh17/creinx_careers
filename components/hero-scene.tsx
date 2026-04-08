@@ -39,9 +39,11 @@ export default function HeroScene({
   const [fallback] = useState(
     typeof navigator !== "undefined" && navigator.hardwareConcurrency < 4,
   );
+  const [webglUnavailable, setWebglUnavailable] = useState(false);
+  const shouldFallback = fallback || webglUnavailable;
 
   useEffect(() => {
-    if (fallback) {
+    if (shouldFallback) {
       return;
     }
 
@@ -59,7 +61,29 @@ export default function HeroScene({
     );
     camera.position.z = 6;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    const probeCanvas = document.createElement("canvas");
+    const hasWebglContext =
+      !!window.WebGLRenderingContext &&
+      !!(
+        probeCanvas.getContext("webgl2") ||
+        probeCanvas.getContext("webgl") ||
+        probeCanvas.getContext("experimental-webgl")
+      );
+
+    if (!hasWebglContext) {
+      setWebglUnavailable(true);
+      return;
+    }
+
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    } catch (error) {
+      console.warn("HeroScene disabled: WebGL context unavailable", error);
+      setWebglUnavailable(true);
+      return;
+    }
+
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setSize(mount.clientWidth, mount.clientHeight);
     renderer.domElement.style.pointerEvents = "none";
@@ -175,9 +199,9 @@ export default function HeroScene({
         mount.removeChild(renderer.domElement);
       }
     };
-  }, [fallback, objectType]);
+  }, [objectType, shouldFallback]);
 
-  if (fallback) {
+  if (shouldFallback) {
     return (
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,0.3),transparent_30%),radial-gradient(circle_at_80%_10%,rgba(99,102,241,0.25),transparent_35%)]" />
     );

@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { usePathname } from "next/navigation";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import type { PropsWithChildren } from "react";
 
 const routeOrder = [
@@ -32,6 +32,10 @@ function getRouteIndex(pathname: string) {
 export function PageTransition({ children }: PropsWithChildren) {
   const pathname = usePathname();
   const previousIndexRef = useRef(getRouteIndex(pathname));
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [pathname]);
 
   const direction = useMemo(() => {
     const nextIndex = getRouteIndex(pathname);

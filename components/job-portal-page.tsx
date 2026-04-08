@@ -24,71 +24,58 @@ export default function JobPortalPage() {
       return;
     }
 
-    const heroTimeline = gsap.timeline({ defaults: { ease: "power2.out" } });
-    heroTimeline
-      .fromTo(
-        ".hero-badge",
-        { y: 16, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6 },
-      )
-      .fromTo(
-        ".hero-headline",
-        { y: 60, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.85 },
-        "+=0.2",
-      )
-      .fromTo(
-        ".hero-subtitle",
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.7 },
-        "+=0.2",
-      )
-      .fromTo(
-        ".hero-buttons",
+    const context = gsap.context(() => {
+      gsap.fromTo(
+        ".hero-badge, .hero-headline, .hero-subtitle, .hero-pill, .hero-buttons, .hero-scroll",
         { y: 24, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.65 },
-        "+=0.2",
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          ease: "power2.out",
+        },
       );
 
-    gsap.fromTo(
-      ".reveal-on-scroll",
-      { y: 60, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        stagger: 0.1,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 70%",
-          once: true,
+      gsap.fromTo(
+        ".reveal-on-scroll",
+        { y: 60, opacity: 0 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 70%",
+            once: true,
+          },
         },
-      },
-    );
+      );
 
-    const line = document.querySelector<SVGPathElement>(
-      ".home-scroll-line-path",
-    );
-    if (line) {
-      const length = line.getTotalLength();
-      line.style.strokeDasharray = `${length}`;
-      line.style.strokeDashoffset = `${length}`;
+      const line = document.querySelector<SVGPathElement>(
+        ".home-scroll-line-path",
+      );
+      if (line) {
+        const length = line.getTotalLength();
+        line.style.strokeDasharray = `${length}`;
+        line.style.strokeDashoffset = `${length}`;
 
-      gsap.to(line, {
-        strokeDashoffset: 0,
-        ease: "none",
-        scrollTrigger: {
-          trigger: document.body,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: 1,
-        },
-      });
-    }
+        gsap.to(line, {
+          strokeDashoffset: 0,
+          ease: "none",
+          scrollTrigger: {
+            trigger: document.body,
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 1,
+          },
+        });
+      }
+    }, sectionRef.current);
 
     return () => {
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+      context.revert();
     };
   }, []);
 

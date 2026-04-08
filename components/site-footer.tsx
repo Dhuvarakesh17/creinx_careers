@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   LinkedinIcon,
@@ -12,9 +13,15 @@ export function SiteFooter() {
     <footer className="mt-20 border-t border-[#1E2D57] bg-[#0F1C3F]">
       <div className="mx-auto grid w-full max-w-7xl gap-10 px-5 py-12 lg:grid-cols-4 lg:px-10">
         <section>
-          <h3 className="font-(family-name:--font-space) text-xl text-white">
-            CREINX
-          </h3>
+          <Link href="/" aria-label="Creinx Home" className="inline-flex">
+            <Image
+              src="/logo.png"
+              alt="Creinx"
+              width={220}
+              height={56}
+              className="h-10 w-auto object-contain"
+            />
+          </Link>
           <p className="mt-3 text-sm text-white/70">
             CREINX is a premium software company engineering scalable web apps,
             mobile apps, and AI automations built for business growth.
@@ -112,7 +119,7 @@ export function SiteFooter() {
         </section>
       </div>
       <p className="border-t border-white/15 px-5 py-4 text-center text-xs text-white/60 lg:px-10">
-        Copyright 2025 CREINX. All rights reserved.
+        © 2026 Creinx. All rights reserved.
       </p>
     </footer>
   );

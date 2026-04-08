@@ -89,14 +89,14 @@ export function TiltCard({
   return (
     <div
       ref={rootRef}
-      className="tilt-root"
+      className="tilt-root h-full"
       style={{ perspective: "1000px" }}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
     >
       <div
         ref={cardRef}
-        className={cn("tilt-card relative overflow-hidden", className)}
+        className={cn("tilt-card relative h-full overflow-hidden", className)}
       >
         {enableShine ? (
           <div

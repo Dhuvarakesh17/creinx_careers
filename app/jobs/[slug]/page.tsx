@@ -5,6 +5,18 @@ import { PublicShell } from "@/components/public-shell";
 import { getJobBySlug, jobOpenings } from "@/data/jobs";
 import { JobBookmarkButton } from "@/components/jobs/job-bookmark-button";
 
+function getExperienceLabel(level: "Fresher" | "Junior" | "Mid" | "Senior") {
+  if (level === "Fresher") {
+    return "Fresher";
+  }
+
+  if (level === "Senior") {
+    return "3 to 5 years";
+  }
+
+  return "1 to 3 years";
+}
+
 export default async function JobDetailPage({
   params,
 }: {
@@ -46,20 +58,21 @@ export default async function JobDetailPage({
             {job.title}
           </h1>
           <p className="mt-3 text-sm text-[#6B7FA3]">
-            {job.location} · {job.workMode} · {job.experienceLevel} · {job.type}{" "}
-            · Posted {job.postedDaysAgo} days ago
+            {job.location} · {job.workMode} · Experience:{" "}
+            {getExperienceLabel(job.experienceLevel)} · {job.type} · Posted{" "}
+            {job.postedDaysAgo} days ago
           </p>
           <p className="mt-2 text-xl font-semibold text-[#2563EB]">
             {job.salaryRange}
           </p>
 
           <div className="mt-5 flex flex-wrap gap-2">
-            <Link
+            <a
               href={`/jobs/${job.slug}/apply`}
               className="rounded-full bg-[#2563EB] px-5 py-2.5 text-sm font-semibold text-white"
             >
               Apply for this Role
-            </Link>
+            </a>
             <JobBookmarkButton slug={job.slug} title={job.title} />
             <button
               type="button"
@@ -156,12 +169,12 @@ export default async function JobDetailPage({
 
           <aside className="space-y-4">
             <div className="glass-card sticky top-24 p-5">
-              <Link
+              <a
                 href={`/jobs/${job.slug}/apply`}
                 className="block rounded-full bg-[#2563EB] px-4 py-2.5 text-center text-sm font-semibold text-white"
               >
                 Apply Now
-              </Link>
+              </a>
               <p className="mt-3 text-xs text-[#6B7FA3]">
                 {job.openings} openings · 42 people applied
               </p>
@@ -171,7 +184,7 @@ export default async function JobDetailPage({
                 <p>Location: {job.location}</p>
                 <p>Work Mode: {job.workMode}</p>
                 <p>Type: {job.type}</p>
-                <p>Experience: {job.experienceLevel}</p>
+                <p>Experience: {getExperienceLabel(job.experienceLevel)}</p>
                 <p>Salary: {job.salaryRange}</p>
               </div>
             </div>

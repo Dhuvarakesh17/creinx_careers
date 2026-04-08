@@ -1,5 +1,11 @@
 import Link from "next/link";
-import { Code2, Megaphone } from "lucide-react";
+import {
+  ArrowRight,
+  BriefcaseBusiness,
+  Code2,
+  Megaphone,
+  Sparkles,
+} from "lucide-react";
 
 import { jobOpenings, sectorMeta, type Sector } from "@/data/jobs";
 import { TiltCard } from "@/components/home/tilt-card";
@@ -13,50 +19,57 @@ const sectorIcons: Record<Sector, typeof Code2> = {
 
 export function HomeCategories() {
   return (
-    <section className="reveal-on-scroll mt-14 grid gap-6 bg-[#0F1C3F] lg:grid-cols-2">
-      {sectors.map((sector) => {
-        const jobs = jobOpenings.filter((job) => job.sector === sector);
-        const SectorIcon = sectorIcons[sector];
+    <section className="reveal-on-scroll mt-14 bg-[#0F1C3F]">
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-[#6B7FA3]">
+            <Sparkles size={14} aria-hidden="true" />
+            Career Tracks
+          </p>
+          <h2 className="mt-2 font-(family-name:--font-heading) text-3xl text-[#F0F4FF]">
+            Step Into Your Future
+          </h2>
+        </div>
+      </div>
 
-        return (
-          <TiltCard
-            key={sector}
-            maxTilt={8}
-            enableShine
-            className="glass-card p-6"
-          >
-            <div className="flex items-start justify-between gap-4">
-              <h3 className="mt-3 font-(family-name:--font-heading) text-2xl text-[#F0F4FF]">
-                {sectorMeta[sector].title}
-              </h3>
-              <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[#1E3A5F] bg-[rgba(37,99,235,0.12)] text-[#93C5FD]">
-                <SectorIcon size={20} aria-hidden="true" />
-              </span>
-            </div>
+      <div className="grid gap-6 lg:grid-cols-2">
+        {sectors.map((sector) => {
+          const jobs = jobOpenings.filter((job) => job.sector === sector);
+          const SectorIcon = sectorIcons[sector];
 
-            <p className="mt-4 text-[#93C5FD]">{jobs.length} openings</p>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {jobs
-                .flatMap((job) => job.skills)
-                .slice(0, 4)
-                .map((skill) => (
-                  <span
-                    key={`${sector}-${skill}`}
-                    className="tag-badge px-3 py-1 text-xs"
-                  >
-                    {skill}
-                  </span>
-                ))}
-            </div>
-            <Link
-              href="/jobs"
-              className="mt-5 inline-flex text-sm font-semibold text-[#93C5FD]"
+          return (
+            <TiltCard
+              key={sector}
+              maxTilt={8}
+              enableShine
+              className="glass-card p-6"
             >
-              Browse roles →
-            </Link>
-          </TiltCard>
-        );
-      })}
+              <div className="flex items-start justify-between gap-4">
+                <h3 className="mt-3 font-(family-name:--font-heading) text-2xl text-[#F0F4FF]">
+                  {sectorMeta[sector].title}
+                </h3>
+                <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[#1E3A5F] bg-[rgba(37,99,235,0.12)] text-[#93C5FD]">
+                  <SectorIcon size={20} aria-hidden="true" />
+                </span>
+              </div>
+
+              <div className="mt-4 flex flex-col items-start gap-2">
+                <p className="inline-flex items-center gap-2 text-[#93C5FD]">
+                  <BriefcaseBusiness size={16} aria-hidden="true" />
+                  {jobs.length} openings
+                </p>
+                <Link
+                  href="/jobs"
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#93C5FD]"
+                >
+                  Browse roles
+                  <ArrowRight size={16} aria-hidden="true" />
+                </Link>
+              </div>
+            </TiltCard>
+          );
+        })}
+      </div>
     </section>
   );
 }

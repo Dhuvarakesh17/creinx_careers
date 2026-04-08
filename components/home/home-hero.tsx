@@ -12,8 +12,10 @@ interface HomeHeroProps {
 export function HomeHero({ openRoles }: HomeHeroProps) {
   return (
     <section className="relative isolate -mx-5 min-h-screen overflow-hidden bg-[#0F1C3F] lg:-mx-10">
-      <HeroScene objectType="sphere" />
-      <div className="relative z-10 flex min-h-screen flex-col justify-between p-7 lg:p-14">
+      <div className="absolute right-0 top-0 bottom-0 z-0 hidden lg:block lg:w-1/2 -translate-y-20">
+        <HeroScene objectType="sphere" />
+      </div>
+      <div className="relative z-10 flex min-h-screen flex-col justify-between p-7 lg:p-14 lg:w-1/2">
         <div className="max-w-4xl">
           <p className="hero-badge text-sm uppercase tracking-[0.25em] text-[#93C5FD]">
             Now Hiring — Chennai and Remote

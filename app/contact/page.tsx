@@ -25,7 +25,7 @@ export default function ContactPage() {
       <main className="mx-auto w-full max-w-7xl px-5 py-10 lg:px-10">
         <section className="glass-card rounded-3xl p-8">
           <h1 className="font-(family-name:--font-space) text-4xl text-[#F0F4FF]">
-            Get in Touch with CREINX.
+            Get in Touch with Creinx.
           </h1>
           <p className="mt-2 text-[#F0F4FF]">
             Have questions about a role or the hiring process? We would love to

@@ -166,3 +166,17 @@
   transition: transform 180ms ease;
   will-change: transform;
 }
+
+@keyframes aboutLogoBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.about-logo-bounce {
+  animation: aboutLogoBounce 3.2s ease-in-out infinite;
+}

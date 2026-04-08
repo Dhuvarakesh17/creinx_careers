@@ -22,6 +22,34 @@ function matchesLocation(job: JobOpening, filter: string) {
   return job.location === filter || job.workMode === filter;
 }
 
+function getRoleChipClasses(level: JobOpening["experienceLevel"]) {
+  if (level === "Fresher") {
+    return "border-emerald-400/35 bg-emerald-500/12 text-emerald-200";
+  }
+
+  if (level === "Junior") {
+    return "border-cyan-400/35 bg-cyan-500/12 text-cyan-200";
+  }
+
+  if (level === "Mid") {
+    return "border-blue-400/35 bg-blue-500/14 text-blue-200";
+  }
+
+  return "border-violet-400/35 bg-violet-500/14 text-violet-200";
+}
+
+function getExperienceLabel(level: JobOpening["experienceLevel"]) {
+  if (level === "Fresher") {
+    return "Fresher";
+  }
+
+  if (level === "Senior") {
+    return "3 to 5 years";
+  }
+
+  return "1 to 3 years";
+}
+
 export default function JobsPage() {
   const { filters, effectiveFilters, setFilters, resetFilters } =
     useJobFilters();
@@ -167,7 +195,7 @@ export default function JobsPage() {
       <main className="mx-auto w-full max-w-7xl bg-[#0F1C3F] px-5 py-10 text-[#F0F4FF] lg:px-10">
         <section className="rounded-3xl border border-transparent bg-transparent p-8">
           <h1 className="font-(family-name:--font-space) text-4xl text-[#F0F4FF]">
-            Open Positions at CREINX
+            Open Positions at Creinx
           </h1>
           <p className="mt-3 text-[#A8B8D8]">
             Showing {filtered.length} open roles across 2 departments.
@@ -243,54 +271,51 @@ export default function JobsPage() {
                   className="glass-card p-5 text-[#F0F4FF] transition hover:-translate-y-1 hover:border-[#2563EB] hover:shadow-[0_0_20px_rgba(37,99,235,0.14)]"
                 >
                   <div className="flex items-start justify-between">
-                    <span
-                      className={cn(
-                        "inline-flex h-11 w-11 items-center justify-center rounded-full text-xs font-semibold",
-                        job.department === "Technical"
-                          ? "bg-blue-500/20 text-blue-200"
-                          : "bg-emerald-500/20 text-emerald-200",
-                      )}
-                    >
-                      {job.department === "Technical" ? "TE" : "DM"}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => toggleBookmark(job.slug)}
-                      className="text-lg text-[#A8B8D8]"
-                      suppressHydrationWarning
-                    >
-                      {bookmarked ? "★" : "☆"}
-                    </button>
-                  </div>
-                  <h3 className="mt-3 font-(family-name:--font-space) text-lg font-semibold text-[#F0F4FF]">
-                    {job.title}
-                  </h3>
-                  <p className="mt-1 text-sm text-[#A8B8D8]">{job.team}</p>
-                  <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                    <span className="tag-badge px-2 py-1">
-                      {job.department}
-                    </span>
-                    {job.statusTags.map((tag) => (
+                    <h3 className="mt-0 font-(family-name:--font-space) text-lg font-semibold text-[#F0F4FF]">
+                      {job.title}
+                    </h3>
+                    <div className="flex flex-col items-end gap-1">
+                      <div className="flex items-center gap-3">
+                        <span
+                          className={cn(
+                            "inline-flex shrink-0 rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap",
+                            job.department === "Technical"
+                              ? "bg-blue-500/20 text-blue-200"
+                              : "bg-emerald-500/20 text-emerald-200",
+                          )}
+                        >
+                          {job.department}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => toggleBookmark(job.slug)}
+                          className="text-lg text-[#A8B8D8]"
+                          suppressHydrationWarning
+                        >
+                          {bookmarked ? "★" : "☆"}
+                        </button>
+                      </div>
                       <span
-                        key={tag}
                         className={cn(
-                          "tag-badge rounded-md px-2 py-1",
-                          tag === "New"
-                            ? "border-[#2563EB] text-[#A8B8D8]"
-                            : tag === "Urgent"
-                              ? "border-[#2563EB] text-[#A8B8D8]"
-                              : "",
+                          "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.09em]",
+                          getRoleChipClasses(job.experienceLevel),
                         )}
                       >
-                        {tag}
+                        <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                        Experience: {getExperienceLabel(job.experienceLevel)}
                       </span>
-                    ))}
+                    </div>
+                  </div>
+                  <p className="mt-1 text-sm text-[#A8B8D8]">{job.team}</p>
+                  <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                    <span className="tag-badge px-2 py-1">{job.location}</span>
+                    <span className="tag-badge px-2 py-1">{job.workMode}</span>
+                    <span className="tag-badge px-2 py-1">
+                      Experience: {getExperienceLabel(job.experienceLevel)}
+                    </span>
                   </div>
                   <p className="mt-3 text-sm text-[#6B7FA3]">
-                    {job.location} · {job.workMode}
-                  </p>
-                  <p className="text-sm text-[#6B7FA3]">
-                    {job.experienceLevel} · {job.type}
+                    {job.salaryRange}
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {job.skills.slice(0, 3).map((skill) => (
@@ -299,10 +324,7 @@ export default function JobsPage() {
                       </span>
                     ))}
                   </div>
-                  <p className="mt-3 text-sm font-semibold text-[#93C5FD]">
-                    {job.salaryRange}
-                  </p>
-                  <p className="mt-1 text-xs text-[#6B7FA3]">
+                  <p className="mt-3 text-xs text-[#6B7FA3]">
                     Posted {job.postedDaysAgo} days ago
                   </p>
                   <div className="mt-4 flex gap-2">
@@ -312,12 +334,12 @@ export default function JobsPage() {
                     >
                       View Details
                     </Link>
-                    <Link
+                    <a
                       href={`/jobs/${job.slug}/apply`}
                       className="rounded-full bg-[#2563EB] px-4 py-2 text-xs font-semibold text-white"
                     >
                       Quick Apply
-                    </Link>
+                    </a>
                   </div>
                 </article>
               );

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -176,9 +177,17 @@ export function SiteHeader() {
       <nav className="mx-auto flex w-full max-w-7xl items-center justify-between px-5 py-4 lg:px-10">
         <Link
           href="/"
-          className="font-(family-name:--font-heading) text-xl font-semibold text-[#F0F4FF]"
+          className="inline-flex items-center"
+          aria-label="Creinx Home"
         >
-          Creinx
+          <Image
+            src="/logo.png"
+            alt="Creinx"
+            width={220}
+            height={56}
+            priority
+            className="h-10 w-auto object-contain"
+          />
         </Link>
 
         <div className="hidden items-center gap-2 md:flex">
@@ -206,25 +215,28 @@ export function SiteHeader() {
           <Link
             href="/jobs"
             aria-label="Open roles"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#2563EB] text-white transition hover:bg-[#1D4ED8]"
+            className="inline-flex h-10 items-center gap-2 rounded-full bg-[#2563EB] px-4 text-sm font-medium text-white transition hover:bg-[#1D4ED8]"
           >
             <BriefcaseBusiness size={18} />
+            <span>Jobs</span>
           </Link>
           <Link
             href="/my-applications"
             aria-label="My applications"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[rgba(168,184,216,0.35)] bg-[rgba(255,255,255,0.05)] text-[#F0F4FF] transition hover:border-[#2563EB] hover:bg-[#2563EB]"
+            className="inline-flex h-10 items-center gap-2 rounded-full border border-[rgba(168,184,216,0.35)] bg-[rgba(255,255,255,0.05)] px-4 text-sm font-medium text-[#F0F4FF] transition hover:border-[#2563EB] hover:bg-[#2563EB]"
           >
             <ClipboardList size={18} />
+            <span>My Applications</span>
           </Link>
           <button
             type="button"
             onClick={() => setIsSearchOpen((prev) => !prev)}
             aria-label="Open global search"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[rgba(168,184,216,0.35)] bg-[rgba(255,255,255,0.05)] text-[#F0F4FF] transition hover:border-[#2563EB] hover:bg-[#2563EB]"
+            className="inline-flex h-10 items-center gap-2 rounded-full border border-[rgba(168,184,216,0.35)] bg-[rgba(255,255,255,0.05)] px-4 text-sm font-medium text-[#F0F4FF] transition hover:border-[#2563EB] hover:bg-[#2563EB]"
             suppressHydrationWarning
           >
             <Search size={18} />
+            <span>Search</span>
           </button>
         </div>
 
@@ -262,31 +274,34 @@ export function SiteHeader() {
               );
             })}
 
-            <div className="mt-1 flex items-center justify-center gap-2">
+            <div className="mt-1 grid gap-2">
               <Link
                 href="/jobs"
                 onClick={() => setIsMenuOpen(false)}
                 aria-label="Open roles"
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#2563EB] text-white transition hover:bg-[#1D4ED8]"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-[#2563EB] px-4 text-sm font-medium text-white transition hover:bg-[#1D4ED8]"
               >
                 <BriefcaseBusiness size={18} />
+                <span>Jobs</span>
               </Link>
               <Link
                 href="/my-applications"
                 onClick={() => setIsMenuOpen(false)}
                 aria-label="My applications"
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[rgba(168,184,216,0.35)] bg-[rgba(255,255,255,0.05)] text-[#F0F4FF] transition hover:border-[#2563EB] hover:bg-[#2563EB]"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-[rgba(168,184,216,0.35)] bg-[rgba(255,255,255,0.05)] px-4 text-sm font-medium text-[#F0F4FF] transition hover:border-[#2563EB] hover:bg-[#2563EB]"
               >
                 <ClipboardList size={18} />
+                <span>My Applications</span>
               </Link>
               <button
                 type="button"
                 onClick={() => setIsSearchOpen((prev) => !prev)}
                 aria-label="Open global search"
-                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[rgba(168,184,216,0.35)] bg-[rgba(255,255,255,0.05)] text-[#F0F4FF] transition hover:border-[#2563EB] hover:bg-[#2563EB]"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-[rgba(168,184,216,0.35)] bg-[rgba(255,255,255,0.05)] px-4 text-sm font-medium text-[#F0F4FF] transition hover:border-[#2563EB] hover:bg-[#2563EB]"
                 suppressHydrationWarning
               >
                 <Search size={18} />
+                <span>Search</span>
               </button>
             </div>
           </div>

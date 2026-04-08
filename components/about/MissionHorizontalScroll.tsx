@@ -1,13 +1,11 @@
 "use client";
 
-import {
-  motion,
-  type MotionProps,
-  useScroll,
-  useSpring,
-  useTransform,
-} from "motion/react";
+import { motion, type MotionProps } from "motion/react";
 import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 type FoundationItem = {
   id: number;
@@ -168,23 +166,43 @@ export default function MissionHorizontalScroll() {
   const mainRef = useRef<HTMLElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
-  const [maxTranslate, setMaxTranslate] = useState(0);
-  const [trackHeight, setTrackHeight] = useState("220vh");
-  const { scrollYProgress } = useScroll({
-    target: mainRef,
-    offset: ["start start", "end end"],
-  });
-  const rawX = useTransform(scrollYProgress, [0, 1], [0, -maxTranslate]);
-  const x = useSpring(rawX, {
-    stiffness: 70,
-    damping: 24,
-    mass: 0.7,
-  });
+  const [trackHeight, setTrackHeight] = useState("160vh");
 
   useEffect(() => {
     if (!carouselRef.current || !viewportRef.current) {
       return;
     }
+
+    let horizontalTween: gsap.core.Tween | null = null;
+    let latestTranslate = 0;
+
+    const createHorizontalTween = () => {
+      if (!mainRef.current || !carouselRef.current) {
+        return;
+      }
+
+      horizontalTween?.kill();
+      gsap.set(carouselRef.current, { x: 0 });
+
+      if (latestTranslate <= 0) {
+        ScrollTrigger.refresh();
+        return;
+      }
+
+      horizontalTween = gsap.to(carouselRef.current, {
+        x: -latestTranslate,
+        ease: "none",
+        scrollTrigger: {
+          trigger: mainRef.current,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 1,
+          invalidateOnRefresh: true,
+        },
+      });
+
+      ScrollTrigger.refresh();
+    };
 
     const resetMaxTranslate = () => {
       const carousel = carouselRef.current;
@@ -194,37 +212,47 @@ export default function MissionHorizontalScroll() {
       }
 
       const next = Math.max(0, carousel.scrollWidth - viewport.clientWidth);
-      setMaxTranslate(next);
+      latestTranslate = next;
 
       // Vertical distance drives the horizontal movement. Give enough track
       // height so users can scroll through the full card rail.
       const viewportHeight = window.innerHeight;
       const nextTrackHeight = Math.max(
-        viewportHeight * 1.8,
-        viewportHeight + next,
+        viewportHeight * 1.1,
+        viewportHeight + next * 0.72,
       );
       setTrackHeight(`${Math.ceil(nextTrackHeight)}px`);
+
+      createHorizontalTween();
     };
 
     resetMaxTranslate();
+    // Run an additional pass after layout settles (fonts/images/sticky metrics).
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(resetMaxTranslate);
+    });
+    const delayedSync = window.setTimeout(resetMaxTranslate, 250);
     const handleResize = throttle(resetMaxTranslate, 16);
+    const handlePageShow = () => resetMaxTranslate();
 
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener("pageshow", handlePageShow);
+    return () => {
+      horizontalTween?.kill();
+      window.clearTimeout(delayedSync);
+      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("pageshow", handlePageShow);
+    };
   }, []);
 
   return (
-    <section ref={mainRef} className="relative mt-0">
+    <section ref={mainRef} className="relative mt-0 w-full">
       <div className="mx-auto w-full" style={{ height: trackHeight }}>
         <div
           ref={viewportRef}
-          className="sticky top-20 flex h-80 w-full items-start overflow-hidden"
+          className="sticky top-[calc(50vh-10rem)] flex h-80 w-full items-start overflow-hidden"
         >
-          <motion.div
-            ref={carouselRef}
-            className="flex gap-3 lg:gap-4"
-            style={{ x }}
-          >
+          <motion.div ref={carouselRef} className="flex gap-3 lg:gap-4">
             {items.map((item, index) => (
               <motion.article
                 key={`mission-item-${item.id}-${index}`}
@@ -237,7 +265,7 @@ export default function MissionHorizontalScroll() {
                     {item.label}
                   </p>
                 </div>
-                <h3 className="mt-4 font-(family-name:--font-cabinet-grotesk) text-[28px] font-bold text-[#F0F4FF]">
+                <h3 className="mt-4 font-(family-name:--font-cabinet-grotesk) text-[28px] font-bold text-[#BFDBFE]">
                   {item.title}
                 </h3>
                 <p className="mt-4 font-(family-name:--font-satoshi) text-[15px] leading-[1.75] text-[#A8B8D8]">

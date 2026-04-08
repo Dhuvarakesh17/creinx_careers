@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Manrope, Space_Grotesk } from "next/font/google";
 import { PageTransition } from "@/components/layout/page-transition";
-import TargetCursor from "@/components/target-cursor";
 import LenisProvider from "@/components/layout/lenis-provider";
 import { SupportChatWidget } from "@/components/support-chat-widget";
 import "./globals.css";
@@ -57,7 +56,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${satoshi.variable} ${cabinetGrotesk.variable} h-full antialiased`}
+      className={`${satoshi.variable} ${cabinetGrotesk.variable} relative h-full antialiased`}
     >
       <body className="relative flex min-h-full flex-col">
         <div className="pointer-events-none fixed inset-0 -z-10 bg-[#0F1C3F]">
@@ -86,12 +85,6 @@ export default function RootLayout({
         </div>
         <div className="relative z-1 flex min-h-full flex-col">
           <LenisProvider>
-            <TargetCursor
-              spinDuration={2}
-              hideDefaultCursor
-              parallaxOn
-              hoverDuration={0.2}
-            />
             <PageTransition>{children}</PageTransition>
             <SupportChatWidget />
           </LenisProvider>

@@ -30,7 +30,6 @@ export function JobsSearchBar({
       >
         <option>All</option>
         <option>Chennai</option>
-        <option>Bengaluru</option>
         <option>Remote</option>
         <option>Hybrid</option>
       </select>
