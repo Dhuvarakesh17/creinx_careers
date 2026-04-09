@@ -1,11 +1,12 @@
 "use client";
 
-import type { PropsWithChildren } from "react";
+import type { HTMLAttributes, PropsWithChildren } from "react";
 import { useRef } from "react";
 
 import { cn } from "@/lib/utils";
 
-interface TiltCardProps extends PropsWithChildren {
+interface TiltCardProps
+  extends PropsWithChildren, Omit<HTMLAttributes<HTMLDivElement>, "children"> {
   className?: string;
   maxTilt?: number;
   enableShine?: boolean;
@@ -16,6 +17,7 @@ export function TiltCard({
   className,
   maxTilt = 10,
   enableShine = false,
+  ...props
 }: TiltCardProps) {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const cardRef = useRef<HTMLDivElement | null>(null);
@@ -97,6 +99,7 @@ export function TiltCard({
       <div
         ref={cardRef}
         className={cn("tilt-card relative h-full overflow-hidden", className)}
+        {...props}
       >
         {enableShine ? (
           <div

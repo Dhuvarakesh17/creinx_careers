@@ -83,29 +83,7 @@ export const whyJoinUs = [
   },
 ];
 
-export const testimonials = [
-  {
-    name: "Nisha Raman",
-    title: "Senior Frontend Developer",
-    department: "Technical",
-    quote:
-      "The best part is how quickly ideas move from concept to production. I get to ship meaningful work every week.",
-  },
-  {
-    name: "Aarav Iyer",
-    title: "Performance Marketing Lead",
-    department: "Digital Marketing",
-    quote:
-      "The team trusts experiments. We test, learn, and scale channels that deliver measurable revenue impact.",
-  },
-  {
-    name: "Priya Menon",
-    title: "Product Designer",
-    department: "Technical",
-    quote:
-      "Design and engineering collaboration is excellent. We obsess over quality and user outcomes together.",
-  },
-];
+
 
 export const jobOpenings: JobOpening[] = [
   {

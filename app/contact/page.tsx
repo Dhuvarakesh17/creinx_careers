@@ -95,8 +95,8 @@ export default function ContactPage() {
           <aside className="glass-card rounded-2xl p-6 lg:order-1">
             <h2 className="text-xl text-[#F0F4FF]">Contact Information</h2>
             <div className="mt-4 space-y-2 text-sm text-[#A8B8D8]">
-              <p>HR Email: careers@creinx.com</p>
-              <p>HR Phone: +91 98765 43210</p>
+              <p>HR Email: contacts@creinx.com</p>
+              <p>HR Phone: +91 90808 20875</p>
               <p>
                 Office: 32/141, 2 Street M.G.R Nagar, Cycle Shop, Puzhal,
                 Chennai-600066

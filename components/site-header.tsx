@@ -177,16 +177,17 @@ export function SiteHeader() {
       <nav className="mx-auto flex w-full max-w-7xl items-center justify-between px-5 py-4 lg:px-10">
         <Link
           href="/"
-          className="inline-flex items-center"
+          className="inline-flex h-12 w-44 items-center overflow-hidden md:h-14 md:w-52"
           aria-label="Creinx Home"
         >
           <Image
             src="/logo.png"
             alt="Creinx"
-            width={220}
-            height={56}
+            width={280}
+            height={72}
+            unoptimized
             priority
-            className="h-10 w-auto object-contain"
+            className="h-full w-full scale-[2.4] object-contain"
           />
         </Link>
 

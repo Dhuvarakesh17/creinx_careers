@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
 import { JobsEmptyState } from "@/components/jobs/jobs-empty-state";
@@ -22,22 +23,6 @@ function matchesLocation(job: JobOpening, filter: string) {
   return job.location === filter || job.workMode === filter;
 }
 
-function getRoleChipClasses(level: JobOpening["experienceLevel"]) {
-  if (level === "Fresher") {
-    return "border-emerald-400/35 bg-emerald-500/12 text-emerald-200";
-  }
-
-  if (level === "Junior") {
-    return "border-cyan-400/35 bg-cyan-500/12 text-cyan-200";
-  }
-
-  if (level === "Mid") {
-    return "border-blue-400/35 bg-blue-500/14 text-blue-200";
-  }
-
-  return "border-violet-400/35 bg-violet-500/14 text-violet-200";
-}
-
 function getExperienceLabel(level: JobOpening["experienceLevel"]) {
   if (level === "Fresher") {
     return "Fresher";
@@ -51,6 +36,7 @@ function getExperienceLabel(level: JobOpening["experienceLevel"]) {
 }
 
 export default function JobsPage() {
+  const router = useRouter();
   const { filters, effectiveFilters, setFilters, resetFilters } =
     useJobFilters();
   const [location, setLocation] = useState("All");
@@ -190,6 +176,14 @@ export default function JobsPage() {
     resetFilters();
   }
 
+  function shouldIgnoreCardNavigation(target: EventTarget | null) {
+    if (!(target instanceof HTMLElement)) {
+      return false;
+    }
+
+    return Boolean(target.closest("a, button, input, select, textarea"));
+  }
+
   return (
     <PublicShell>
       <main className="mx-auto w-full max-w-7xl bg-[#0F1C3F] px-5 py-10 text-[#F0F4FF] lg:px-10">
@@ -265,10 +259,30 @@ export default function JobsPage() {
           >
             {pagedJobs.map((job) => {
               const bookmarked = bookmarks.includes(job.slug);
+              const experienceText =
+                job.experienceLevel === "Fresher"
+                  ? "Fresher"
+                  : `Experience: ${getExperienceLabel(job.experienceLevel)}`;
               return (
                 <article
                   key={job.id}
-                  className="glass-card p-5 text-[#F0F4FF] transition hover:-translate-y-1 hover:border-[#2563EB] hover:shadow-[0_0_20px_rgba(37,99,235,0.14)]"
+                  className="glass-card cursor-pointer p-5 text-[#F0F4FF] transition hover:-translate-y-1 hover:border-[#2563EB] hover:shadow-[0_0_20px_rgba(37,99,235,0.14)]"
+                  onClick={(event) => {
+                    if (shouldIgnoreCardNavigation(event.target)) {
+                      return;
+                    }
+
+                    router.push(`/jobs/${job.slug}`);
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      router.push(`/jobs/${job.slug}`);
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Open details for ${job.title}`}
                 >
                   <div className="flex items-start justify-between">
                     <h3 className="mt-0 font-(family-name:--font-space) text-lg font-semibold text-[#F0F4FF]">
@@ -295,15 +309,6 @@ export default function JobsPage() {
                           {bookmarked ? "★" : "☆"}
                         </button>
                       </div>
-                      <span
-                        className={cn(
-                          "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.09em]",
-                          getRoleChipClasses(job.experienceLevel),
-                        )}
-                      >
-                        <span className="h-1.5 w-1.5 rounded-full bg-current" />
-                        Experience: {getExperienceLabel(job.experienceLevel)}
-                      </span>
                     </div>
                   </div>
                   <p className="mt-1 text-sm text-[#A8B8D8]">{job.team}</p>
@@ -311,7 +316,7 @@ export default function JobsPage() {
                     <span className="tag-badge px-2 py-1">{job.location}</span>
                     <span className="tag-badge px-2 py-1">{job.workMode}</span>
                     <span className="tag-badge px-2 py-1">
-                      Experience: {getExperienceLabel(job.experienceLevel)}
+                      {experienceText}
                     </span>
                   </div>
                   <p className="mt-3 text-sm text-[#6B7FA3]">

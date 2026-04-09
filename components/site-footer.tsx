@@ -13,13 +13,18 @@ export function SiteFooter() {
     <footer className="mt-20 border-t border-[#1E2D57] bg-[#0F1C3F]">
       <div className="mx-auto grid w-full max-w-7xl gap-10 px-5 py-12 lg:grid-cols-4 lg:px-10">
         <section>
-          <Link href="/" aria-label="Creinx Home" className="inline-flex">
+          <Link
+            href="/"
+            aria-label="Creinx Home"
+            className="inline-flex h-12 w-44 items-center overflow-hidden md:h-14 md:w-52"
+          >
             <Image
               src="/logo.png"
               alt="Creinx"
-              width={220}
-              height={56}
-              className="h-10 w-auto object-contain"
+              width={280}
+              height={90}
+              unoptimized
+              className="h-full w-full scale-[2.4] object-contain"
             />
           </Link>
           <p className="mt-3 text-sm text-white/70">
@@ -41,7 +46,7 @@ export function SiteFooter() {
               target="_blank"
               rel="noopener noreferrer"
               className="text-white/70 hover:text-white transition-colors"
-              aria-label="Twitter"
+              aria-label="X"
             >
               <TwitterIcon />
             </Link>
@@ -90,8 +95,8 @@ export function SiteFooter() {
         <section>
           <h4 className="font-semibold text-white">Contact</h4>
           <div className="mt-3 grid gap-2 text-sm text-white/70">
-            <p>careers@creinx.com</p>
-            <p>+91 98765 43210</p>
+            <p>contacts@creinx.com</p>
+            <p>+91 90808 20875</p>
             <p>
               32/141, 2 Street M.G.R Nagar, Cycle Shop, Puzhal, Chennai-600066
             </p>

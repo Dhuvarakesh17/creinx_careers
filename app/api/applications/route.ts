@@ -156,7 +156,26 @@ export async function POST(request: Request) {
       }
     }
 
+    const applicantFrom =
+      process.env.RESEND_APPLICANT_FROM_EMAIL?.trim() ||
+      process.env.RESEND_FROM_EMAIL?.trim();
+
+    if (!applicantFrom) {
+      console.error(
+        "Missing RESEND_APPLICANT_FROM_EMAIL/RESEND_FROM_EMAIL for applicant confirmation email",
+      );
+      return NextResponse.json(
+        {
+          message:
+            "Application submitted, but confirmation email is not configured yet.",
+        },
+        { status: 202 },
+      );
+    }
+
     const { error: applicantEmailError } = await sendResendEmail({
+      from: applicantFrom,
+      allowOnboardingFallback: false,
       to: [parsed.data.email],
       subject: `Application Received - ${role.title}`,
       html: `

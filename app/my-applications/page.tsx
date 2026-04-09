@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Mail, ArrowRight, AlertCircle } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase";
+import { jobOpenings } from "@/data/jobs";
 
 interface Application {
   id: string;
@@ -16,14 +18,16 @@ interface Application {
 }
 
 export default function MyApplicationsPage() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
   const [error, setError] = useState("");
 
-  async function handleSearch(e: React.FormEvent) {
-    e.preventDefault();
+  async function searchApplications(searchEmail: string) {
     setLoading(true);
     setError("");
     setSearched(true);
@@ -33,7 +37,7 @@ export default function MyApplicationsPage() {
       const { data, error: queryError } = await supabase
         .from("job_applications")
         .select("*")
-        .eq("candidate_email", email.toLowerCase())
+        .eq("candidate_email", searchEmail)
         .order("created_at", { ascending: false });
 
       if (queryError) throw queryError;
@@ -46,6 +50,30 @@ export default function MyApplicationsPage() {
       setLoading(false);
     }
   }
+
+  function handleSearch(e: React.FormEvent) {
+    e.preventDefault();
+    const normalizedEmail = email.trim().toLowerCase();
+
+    if (!normalizedEmail) {
+      return;
+    }
+
+    const nextParams = new URLSearchParams(searchParams.toString());
+    nextParams.set("email", normalizedEmail);
+    router.replace(`${pathname}?${nextParams.toString()}`);
+  }
+
+  useEffect(() => {
+    const emailFromQuery = searchParams.get("email")?.trim().toLowerCase();
+
+    if (!emailFromQuery) {
+      return;
+    }
+
+    setEmail(emailFromQuery);
+    void searchApplications(emailFromQuery);
+  }, [searchParams]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -60,6 +88,11 @@ export default function MyApplicationsPage() {
       default:
         return "bg-gray-500/20 text-gray-300";
     }
+  };
+
+  const getJobSlug = (roleId: string) => {
+    const job = jobOpenings.find((j) => j.id === roleId);
+    return job?.slug || roleId;
   };
 
   return (
@@ -167,7 +200,7 @@ export default function MyApplicationsPage() {
                         {app.status}
                       </span>
                       <Link
-                        href={`/jobs/${app.role_id}`}
+                        href={`/jobs/${getJobSlug(app.role_id)}`}
                         className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
                       >
                         View Role

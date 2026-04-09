@@ -49,7 +49,7 @@ const items: FoundationItem[] = [
   {
     id: 3,
     label: "VALUES",
-    title: "Mission, Vision & Values",
+    title: "Our Values",
     description:
       "Clarity. Function. Scalability. Partnership. These four principles guide every decision we make and every product we build.",
     icon: "values",

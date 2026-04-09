@@ -6,14 +6,14 @@ Startup-ready careers portal built with Next.js 16 + Tailwind CSS 4.
 
 - Premium animated landing and story sections
 - Two sector hiring layout:
-	- Technical sector
-	- Digital marketing sector
+  - Technical sector
+  - Digital marketing sector
 - Role-specific apply flow (click role -> preselected application form)
 - Application form with validation and PDF resume upload
 - Submission pipeline:
-	- Resume upload to Supabase Storage
-	- Application record in Supabase Postgres
-	- Notification email through Resend
+  - Resume upload to Supabase Storage
+  - Application record in Supabase Postgres
+  - Notification email through Resend
 
 ## Stack
 
@@ -45,6 +45,7 @@ Fill all keys in `.env.local`:
 - `SUPABASE_RESUME_BUCKET`
 - `RESEND_API_KEY`
 - `RESEND_FROM_EMAIL`
+- `RESEND_APPLICANT_FROM_EMAIL` (recommended, for applicant confirmations)
 - `CAREERS_INBOX_EMAIL`
 
 3. Create Supabase objects
@@ -73,3 +74,4 @@ npm run build
 - The form endpoint is at `/api/applications`.
 - Storage bucket defaults to `resumes`.
 - Email is sent only when both `RESEND_FROM_EMAIL` and `CAREERS_INBOX_EMAIL` are configured.
+- Applicant confirmation emails must use a verified sender (`RESEND_APPLICANT_FROM_EMAIL` or `RESEND_FROM_EMAIL`).

@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ArrowLeft } from "lucide-react";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -31,6 +33,14 @@ export default function AdminLoginPage() {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-lg items-center px-5 py-10">
       <section className="glass-card w-full rounded-2xl p-6">
+        <Link
+          href="/"
+          className="mb-4 inline-flex items-center gap-2 text-sm text-[#A8B8D8] transition hover:text-[#F0F4FF]"
+          aria-label="Back to home"
+        >
+          <ArrowLeft size={16} />
+          <span>Back to Home</span>
+        </Link>
         <h1 className="font-(family-name:--font-space) text-3xl text-[#F0F4FF]">
           Admin Login
         </h1>

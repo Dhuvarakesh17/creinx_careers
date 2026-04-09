@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 import { jobOpenings, type JobOpening } from "@/data/jobs";
 import { TiltCard } from "@/components/home/tilt-card";
@@ -18,8 +19,22 @@ function getExperienceLabel(level: JobOpening["experienceLevel"]) {
 }
 
 function FeaturedJobCard({ job }: { job: JobOpening }) {
+  const router = useRouter();
+
   return (
-    <TiltCard className="glass-card group flex h-full flex-col rounded-2xl p-5 shadow-[0_10px_30px_rgba(15,28,63,0.08)] hover:border-[#2563EB]/40">
+    <TiltCard
+      className="glass-card group flex h-full cursor-pointer flex-col rounded-2xl p-5 shadow-[0_10px_30px_rgba(15,28,63,0.08)] hover:border-[#2563EB]/40"
+      onClick={() => router.push(`/jobs/${job.slug}`)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          router.push(`/jobs/${job.slug}`);
+        }
+      }}
+      aria-label={`Open details for ${job.title}`}
+    >
       <div className="flex items-start justify-between gap-2">
         <h3 className="font-(family-name:--font-space) text-xl text-[#F0F4FF]">
           {job.title}
@@ -52,6 +67,7 @@ function FeaturedJobCard({ job }: { job: JobOpening }) {
         </p>
         <a
           href={`/jobs/${job.slug}/apply`}
+          onClick={(event) => event.stopPropagation()}
           className="mt-4 inline-flex rounded-full bg-[#2563EB] px-4 py-2 text-sm font-semibold text-white"
         >
           Quick Apply

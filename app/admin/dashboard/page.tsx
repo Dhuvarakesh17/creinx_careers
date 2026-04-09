@@ -2,6 +2,8 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 
 import { jobOpenings } from "@/data/jobs";
+import { AdminJobPostingsPanel } from "@/components/admin/admin-job-postings-panel";
+import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 
 const statusFlow = [
   "New",
@@ -19,6 +21,26 @@ export default async function AdminDashboardPage() {
   if (!token) {
     redirect("/admin/login");
   }
+
+  const supabase = getSupabaseAdmin();
+  const { data: jobsRows } = await supabase
+    .from("jobs_with_posted_days")
+    .select("id, title, department, live_posted_days_ago, created_at")
+    .order("created_at", { ascending: false });
+
+  const dbRows = (jobsRows ?? []).map((job) => {
+    return {
+      id: String(job.id),
+      title: String(job.title),
+      department:
+        String(job.department) === "digital-marketing"
+          ? ("Digital Marketing" as const)
+          : ("Technical" as const),
+      applicants: 0,
+      postedDaysAgo: Number(job.live_posted_days_ago ?? 0),
+      status: "Active" as const,
+    };
+  });
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-7xl px-5 py-10 lg:px-10">
@@ -57,46 +79,20 @@ export default async function AdminDashboardPage() {
         ))}
       </section>
 
-      <section className="glass-card mt-6 p-5">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl text-[#F0F4FF]">Job Postings</h2>
-          <button
-            type="button"
-            className="rounded-full bg-[#2563EB] px-4 py-2 text-sm font-semibold text-white"
-          >
-            Post New Job
-          </button>
-        </div>
-        <div className="mt-4 overflow-x-auto">
-          <table className="w-full min-w-195 text-left text-sm">
-            <thead className="text-[#6B7FA3]">
-              <tr>
-                <th className="py-2">Title</th>
-                <th>Department</th>
-                <th>Applicants</th>
-                <th>Status</th>
-                <th>Posted</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {jobOpenings.map((job) => (
-                <tr
-                  key={job.id}
-                  className="border-t border-[#1E3A5F] text-[#A8B8D8]"
-                >
-                  <td className="py-3">{job.title}</td>
-                  <td>{job.department}</td>
-                  <td>{Math.max(12, job.openings * 6)}</td>
-                  <td>Active</td>
-                  <td>{job.postedDaysAgo}d ago</td>
-                  <td>Edit · Close</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <AdminJobPostingsPanel
+        initialRows={
+          dbRows.length > 0
+            ? dbRows
+            : jobOpenings.map((job) => ({
+                id: job.id,
+                title: job.title,
+                department: job.department,
+                applicants: Math.max(12, job.openings * 6),
+                postedDaysAgo: job.postedDaysAgo,
+                status: "Active" as const,
+              }))
+        }
+      />
 
       <section className="glass-card mt-6 p-5">
         <h2 className="text-xl text-[#F0F4FF]">Applications Management</h2>
