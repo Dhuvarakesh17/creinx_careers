@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Mail, ArrowRight, AlertCircle } from "lucide-react";
@@ -18,6 +18,18 @@ interface Application {
 }
 
 export default function MyApplicationsPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-linear-to-b from-[#0F1C3F] to-[#0A111F]" />
+      }
+    >
+      <MyApplicationsContent />
+    </Suspense>
+  );
+}
+
+function MyApplicationsContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
