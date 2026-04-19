@@ -68,8 +68,15 @@ function toStringArray(value: unknown) {
 }
 
 function normalizeDepartment(value: string): PublicJob["department"] {
-  const normalized = value.trim().toLowerCase();
-  if (normalized === "digital-marketing" || normalized === "marketing") {
+  const normalized = value
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_]+/g, "-");
+  if (
+    normalized === "digital-marketing" ||
+    normalized === "marketing" ||
+    normalized === "digitalmarketing"
+  ) {
     return "Digital Marketing";
   }
 
@@ -77,8 +84,15 @@ function normalizeDepartment(value: string): PublicJob["department"] {
 }
 
 function normalizeSector(value: string): PublicJob["sector"] {
-  const normalized = value.trim().toLowerCase();
-  if (normalized === "digital-marketing" || normalized === "marketing") {
+  const normalized = value
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_]+/g, "-");
+  if (
+    normalized === "digital-marketing" ||
+    normalized === "marketing" ||
+    normalized === "digitalmarketing"
+  ) {
     return "digital-marketing";
   }
 
