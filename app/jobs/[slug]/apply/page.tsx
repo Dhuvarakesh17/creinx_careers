@@ -94,6 +94,10 @@ export default function JobApplyPage() {
   const [error, setError] = useState("");
   const [referenceId, setReferenceId] = useState("");
 
+  function sanitizePhone(value: string) {
+    return value.replace(/\D/g, "").slice(0, 10);
+  }
+
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   }, [slug]);
@@ -181,10 +185,11 @@ export default function JobApplyPage() {
 
   function isStepComplete(step: number) {
     if (step === 1) {
+      const phoneDigits = sanitizePhone(form.phone);
       return Boolean(
         form.name.trim() &&
         form.email.trim() &&
-        form.phone.trim() &&
+        phoneDigits.length === 10 &&
         form.city.trim() &&
         isGmailAddress,
       );
@@ -212,7 +217,7 @@ export default function JobApplyPage() {
 
   function getStepError(step: number) {
     if (step === 1) {
-      return "Please enter a Gmail address and complete the required personal details before moving on.";
+      return "Please enter a Gmail address, city, and a valid 10-digit phone number before moving on.";
     }
 
     if (step === 2) {
@@ -354,8 +359,12 @@ export default function JobApplyPage() {
                 />
                 <input
                   value={form.phone}
-                  onChange={(e) => update("phone", e.target.value)}
-                  placeholder="Phone number *"
+                  onChange={(e) =>
+                    update("phone", sanitizePhone(e.target.value))
+                  }
+                  inputMode="numeric"
+                  maxLength={10}
+                  placeholder="Phone number (10 digits) *"
                   className="field-solid px-3 py-2"
                 />
                 <input

@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import { jobOpenings } from "@/data/jobs";
 import { HomeAboutStory } from "@/components/home/home-about-story";
 import { HomeCta } from "@/components/home/home-cta";
 import { HomeCategories } from "@/components/home/home-categories";
@@ -12,12 +11,47 @@ import { HomeFeaturedJobs } from "@/components/home/home-featured-jobs";
 import { HomeHero } from "@/components/home/home-hero";
 import { HomeScrollLine } from "@/components/home/home-scroll-line";
 import { PublicShell } from "@/components/public-shell";
+import {
+  loadPublicJobs,
+  staticPublicJobs,
+  type PublicJob,
+} from "@/lib/public-jobs";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function JobPortalPage() {
   const sectionRef = useRef<HTMLDivElement | null>(null);
-  const openRoles = jobOpenings.length;
+  const [jobs, setJobs] = useState<PublicJob[]>(staticPublicJobs);
+
+  useEffect(() => {
+    let active = true;
+
+    loadPublicJobs().then((items) => {
+      if (active) {
+        setJobs(items);
+      }
+    });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const openRoles = jobs.length;
+  const sectorCounts = useMemo(
+    () =>
+      jobs.reduce(
+        (accumulator, job) => {
+          accumulator[job.sector] += 1;
+          return accumulator;
+        },
+        {
+          technical: 0,
+          "digital-marketing": 0,
+        } as Record<PublicJob["sector"], number>,
+      ),
+    [jobs],
+  );
 
   useEffect(() => {
     if (!sectionRef.current) {
@@ -87,7 +121,7 @@ export default function JobPortalPage() {
         <div className="relative z-10 mx-auto w-full max-w-7xl px-5 lg:px-10">
           <HomeHero openRoles={openRoles} />
 
-          <HomeCategories />
+          <HomeCategories counts={sectorCounts} />
 
           <HomeFeaturedJobs />
 

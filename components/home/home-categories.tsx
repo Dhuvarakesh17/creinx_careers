@@ -7,7 +7,7 @@ import {
   Sparkles,
 } from "lucide-react";
 
-import { jobOpenings, sectorMeta, type Sector } from "@/data/jobs";
+import { sectorMeta, type Sector } from "@/data/jobs";
 import { TiltCard } from "@/components/home/tilt-card";
 
 const sectors: Sector[] = ["technical", "digital-marketing"];
@@ -17,7 +17,7 @@ const sectorIcons: Record<Sector, typeof Code2> = {
   "digital-marketing": Megaphone,
 };
 
-export function HomeCategories() {
+export function HomeCategories({ counts }: { counts: Record<Sector, number> }) {
   return (
     <section className="reveal-on-scroll mt-14 bg-[#0F1C3F]">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
@@ -34,7 +34,6 @@ export function HomeCategories() {
 
       <div className="grid gap-6 lg:grid-cols-2">
         {sectors.map((sector) => {
-          const jobs = jobOpenings.filter((job) => job.sector === sector);
           const SectorIcon = sectorIcons[sector];
 
           return (
@@ -56,7 +55,7 @@ export function HomeCategories() {
               <div className="mt-6 flex flex-col items-start gap-3">
                 <p className="inline-flex items-center gap-2 text-[#93C5FD]">
                   <BriefcaseBusiness size={18} aria-hidden="true" />
-                  {jobs.length} openings
+                  {counts[sector]} openings
                 </p>
                 <Link
                   href="/jobs"
