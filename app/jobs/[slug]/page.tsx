@@ -2,157 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { PublicShell } from "@/components/public-shell";
-import { getJobBySlug, jobOpenings, type JobOpening } from "@/data/jobs";
 import { JobBookmarkButton } from "@/components/jobs/job-bookmark-button";
 import { ShareJobButton } from "@/components/jobs/share-job-button";
-import { createSupabaseServerClient } from "@/lib/supabase";
-
-type PageJob = {
-  id: string;
-  slug: string;
-  title: string;
-  department: "Technical" | "Digital Marketing";
-  statusTags: string[];
-  location: string;
-  workMode: "Remote" | "Hybrid" | "Onsite";
-  experienceLevel: "Fresher" | "Junior" | "Mid" | "Senior";
-  type: "Full-time" | "Part-time" | "Internship" | "Contract";
-  postedDaysAgo: number;
-  salaryRange: string;
-  openings: number;
-  aboutRole: string[];
-  responsibilities: string[];
-  requiredQualifications: string[];
-  niceToHave: string[];
-  skills: string[];
-  perks: string[];
-  interviewProcess: string[];
-};
-
-function titleCase(value: string) {
-  if (!value) {
-    return value;
-  }
-
-  return value[0].toUpperCase() + value.slice(1);
-}
-
-function toSalaryRange(min: number | null, max: number | null) {
-  if (typeof min !== "number" || typeof max !== "number") {
-    return "Salary based on experience";
-  }
-
-  return `₹ ${(min / 100000).toFixed(1)} - ${(max / 100000).toFixed(1)} LPA`;
-}
-
-function mapDbJobToPageJob(row: Record<string, unknown>): PageJob {
-  const department =
-    String(row.department) === "digital-marketing"
-      ? "Digital Marketing"
-      : "Technical";
-  const workMode = titleCase(String(row.work_mode)) as PageJob["workMode"];
-  const experienceLevel = titleCase(
-    String(row.experience),
-  ) as PageJob["experienceLevel"];
-  const jobType = String(row.employment_type || "Full-time") as PageJob["type"];
-
-  return {
-    id: String(row.id),
-    slug: String(row.slug),
-    title: String(row.title),
-    department,
-    statusTags: (row.status_tags as string[] | null) ?? [],
-    location: String(row.location),
-    workMode,
-    experienceLevel,
-    type: jobType,
-    postedDaysAgo: Number(row.live_posted_days_ago ?? row.posted_days_ago ?? 0),
-    salaryRange: toSalaryRange(
-      (row.salary_min as number | null) ?? null,
-      (row.salary_max as number | null) ?? null,
-    ),
-    openings: Number(row.openings ?? 1),
-    aboutRole: (row.about_role as string[] | null) ?? [],
-    responsibilities: (row.responsibilities as string[] | null) ?? [],
-    requiredQualifications: (row.requirements as string[] | null) ?? [],
-    niceToHave: (row.nice_to_have as string[] | null) ?? [],
-    skills: (row.skills as string[] | null) ?? [],
-    perks: (row.perks as string[] | null) ?? [],
-    interviewProcess: (row.interview_process as string[] | null) ?? [
-      "Application Review (24-48 hours)",
-      "Technical Screening",
-      "Technical Interview",
-      "HR Round",
-      "Offer",
-    ],
-  };
-}
-
-async function getDbJob(slug: string): Promise<PageJob | null> {
-  const supabase = createSupabaseServerClient();
-  const { data, error } = await supabase
-    .from("jobs_with_posted_days")
-    .select("*")
-    .eq("slug", slug)
-    .eq("status", "active")
-    .maybeSingle();
-
-  if (error || !data) {
-    return null;
-  }
-
-  return mapDbJobToPageJob(data as Record<string, unknown>);
-}
-
-async function getDbSimilar(job: PageJob): Promise<PageJob[]> {
-  const supabase = createSupabaseServerClient();
-  const department =
-    job.department === "Digital Marketing" ? "digital-marketing" : "technical";
-
-  const { data, error } = await supabase
-    .from("jobs_with_posted_days")
-    .select("*")
-    .eq("department", department)
-    .eq("status", "active")
-    .neq("slug", job.slug)
-    .limit(3);
-
-  if (error || !data) {
-    return [];
-  }
-
-  return (data as Record<string, unknown>[]).map(mapDbJobToPageJob);
-}
-
-function mapStaticJobToPageJob(job: JobOpening): PageJob {
-  return {
-    id: job.id,
-    slug: job.slug,
-    title: job.title,
-    department: job.department,
-    statusTags: job.statusTags,
-    location: job.location,
-    workMode: job.workMode,
-    experienceLevel: job.experienceLevel,
-    type: job.type,
-    postedDaysAgo: job.postedDaysAgo,
-    salaryRange: job.salaryRange,
-    openings: job.openings,
-    aboutRole: job.aboutRole,
-    responsibilities: job.responsibilities,
-    requiredQualifications: job.requiredQualifications,
-    niceToHave: job.niceToHave,
-    skills: job.skills,
-    perks: job.perks,
-    interviewProcess: [
-      "Application Review (24-48 hours)",
-      "Technical Screening",
-      "Technical Interview",
-      "HR Round",
-      "Offer",
-    ],
-  };
-}
+import { loadPublicJobBySlug, loadPublicJobs } from "@/lib/public-jobs";
 
 function getExperienceLabel(level: "Fresher" | "Junior" | "Mid" | "Senior") {
   if (level === "Fresher") {
@@ -172,24 +24,17 @@ export default async function JobDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const dbJob = await getDbJob(slug);
-  const staticJob = getJobBySlug(slug);
-  const job = dbJob ?? (staticJob ? mapStaticJobToPageJob(staticJob) : null);
+  const job = await loadPublicJobBySlug(slug);
 
   if (!job) {
     notFound();
   }
 
-  const similarFromDb = dbJob ? await getDbSimilar(job) : [];
-  const similar =
-    similarFromDb.length > 0
-      ? similarFromDb
-      : jobOpenings
-          .filter(
-            (item) =>
-              item.department === job.department && item.slug !== job.slug,
-          )
-          .slice(0, 3);
+  const similar = (await loadPublicJobs())
+    .filter(
+      (item) => item.department === job.department && item.slug !== job.slug,
+    )
+    .slice(0, 3);
 
   return (
     <PublicShell>

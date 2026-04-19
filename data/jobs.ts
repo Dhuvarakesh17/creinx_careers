@@ -83,8 +83,6 @@ export const whyJoinUs = [
   },
 ];
 
-
-
 export const jobOpenings: JobOpening[] = [
   {
     id: "frontend-engineer",
@@ -98,7 +96,7 @@ export const jobOpenings: JobOpening[] = [
     experienceLevel: "Senior",
     experienceRange: "3-5",
     type: "Full-time",
-    salaryRange: "₹ 8 - 14 LPA",
+    salaryRange: "₹ 8,00,000 - ₹ 14,00,000",
     summary:
       "Build advanced, high-performance interfaces using React and Next.js for enterprise products.",
     skills: ["React", "Next.js", "TypeScript", "Tailwind", "Testing"],
@@ -144,7 +142,7 @@ export const jobOpenings: JobOpening[] = [
     experienceLevel: "Mid",
     experienceRange: "1-3",
     type: "Full-time",
-    salaryRange: "₹ 7 - 12 LPA",
+    salaryRange: "₹ 7,00,000 - ₹ 12,00,000",
     summary:
       "Design robust APIs, data models, and scalable backend services for product and client systems.",
     skills: ["Node.js", "PostgreSQL", "Redis", "AWS", "API Design"],
@@ -185,7 +183,7 @@ export const jobOpenings: JobOpening[] = [
     experienceLevel: "Mid",
     experienceRange: "1-3",
     type: "Contract",
-    salaryRange: "₹ 6 - 9 LPA",
+    salaryRange: "₹ 6,00,000 - ₹ 9,00,000",
     summary:
       "Create intuitive product journeys and scalable design systems for SaaS and web products.",
     skills: ["Figma", "Design Systems", "User Research", "Prototyping"],
@@ -225,7 +223,7 @@ export const jobOpenings: JobOpening[] = [
     experienceLevel: "Mid",
     experienceRange: "1-3",
     type: "Full-time",
-    salaryRange: "₹ 6 - 10 LPA",
+    salaryRange: "₹ 6,00,000 - ₹ 10,00,000",
     summary:
       "Run and optimize paid campaigns across channels with strong attribution and experimentation discipline.",
     skills: ["Google Ads", "Meta Ads", "GA4", "Attribution", "Landing Pages"],
@@ -265,7 +263,7 @@ export const jobOpenings: JobOpening[] = [
     experienceLevel: "Junior",
     experienceRange: "1-3",
     type: "Full-time",
-    salaryRange: "₹ 5 - 8 LPA",
+    salaryRange: "₹ 5,00,000 - ₹ 8,00,000",
     summary:
       "Develop high-intent content and technical SEO programs that grow qualified organic traffic.",
     skills: ["SEO", "Content Strategy", "Search Console", "Analytics"],
@@ -305,7 +303,7 @@ export const jobOpenings: JobOpening[] = [
     experienceLevel: "Fresher",
     experienceRange: "0-1",
     type: "Internship",
-    salaryRange: "₹ 2.4 - 4.2 LPA",
+    salaryRange: "₹ 2,40,000 - ₹ 4,20,000",
     summary:
       "Create social campaigns, manage community, and build brand storytelling across short-form platforms.",
     skills: ["Social Strategy", "Reels", "Community", "Copywriting"],

@@ -1,12 +1,17 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 
-import { jobOpenings, type JobOpening } from "@/data/jobs";
 import { TiltCard } from "@/components/home/tilt-card";
+import {
+  loadPublicJobs,
+  staticPublicJobs,
+  type PublicJob,
+} from "@/lib/public-jobs";
 
-function getExperienceLabel(level: JobOpening["experienceLevel"]) {
+function getExperienceLabel(level: PublicJob["experienceLevel"]) {
   if (level === "Fresher") {
     return "Fresher";
   }
@@ -18,7 +23,7 @@ function getExperienceLabel(level: JobOpening["experienceLevel"]) {
   return "1 to 3 years";
 }
 
-function FeaturedJobCard({ job }: { job: JobOpening }) {
+function FeaturedJobCard({ job }: { job: PublicJob }) {
   const router = useRouter();
 
   return (
@@ -78,7 +83,23 @@ function FeaturedJobCard({ job }: { job: JobOpening }) {
 }
 
 export function HomeFeaturedJobs() {
-  const featuredJobs = jobOpenings.slice(0, 6);
+  const [featuredJobs, setFeaturedJobs] = useState<PublicJob[]>(
+    staticPublicJobs.slice(0, 6),
+  );
+
+  useEffect(() => {
+    let active = true;
+
+    loadPublicJobs().then((items) => {
+      if (active) {
+        setFeaturedJobs(items.slice(0, 6));
+      }
+    });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   return (
     <section className="mt-14">

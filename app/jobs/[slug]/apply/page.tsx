@@ -5,9 +5,13 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
 import { PublicShell } from "@/components/public-shell";
-import { getJobBySlug } from "@/data/jobs";
 import Stepper, { Step } from "@/components/stepper";
 import { JobBookmarkButton } from "@/components/jobs/job-bookmark-button";
+import {
+  loadPublicJobBySlug,
+  staticPublicJobs,
+  type PublicJob,
+} from "@/lib/public-jobs";
 
 type FormState = {
   name: string;
@@ -52,7 +56,7 @@ export default function JobApplyPage() {
   const router = useRouter();
   const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug;
   const storageKey = slug ? `apply-v2-${slug}` : null;
-  const job = slug ? getJobBySlug(slug) : undefined;
+  const [job, setJob] = useState<PublicJob | null | undefined>(undefined);
   const [form, setForm] = useState<FormState>(() => {
     if (typeof window === "undefined") {
       return initialState;
@@ -95,6 +99,34 @@ export default function JobApplyPage() {
   }, [slug]);
 
   useEffect(() => {
+    let active = true;
+
+    async function loadJob() {
+      if (!slug) {
+        if (active) {
+          setJob(null);
+        }
+        return;
+      }
+
+      const resolved =
+        (await loadPublicJobBySlug(slug)) ??
+        staticPublicJobs.find((item) => item.slug === slug) ??
+        null;
+
+      if (active) {
+        setJob(resolved);
+      }
+    }
+
+    loadJob();
+
+    return () => {
+      active = false;
+    };
+  }, [slug]);
+
+  useEffect(() => {
     if (status !== "success") {
       return;
     }
@@ -117,6 +149,16 @@ export default function JobApplyPage() {
       // Ignore storage write failures (e.g., private mode / restricted storage).
     }
   }, [form, storageKey]);
+
+  if (job === undefined) {
+    return (
+      <PublicShell>
+        <main className="mx-auto w-full max-w-3xl px-5 py-10 lg:px-10">
+          <p className="text-[#F0F4FF]">Loading role details...</p>
+        </main>
+      </PublicShell>
+    );
+  }
 
   if (!job) {
     return (
@@ -209,6 +251,7 @@ export default function JobApplyPage() {
 
     const payload = new FormData();
     payload.set("roleId", job.id);
+    payload.set("roleSlug", job.slug);
     payload.set("name", form.name);
     payload.set("email", form.email);
     payload.set("phone", form.phone);

@@ -12,22 +12,30 @@ function mapExperience(value: string) {
   return value.toLowerCase();
 }
 
-function parseLpaRange(value: string) {
-  const matches = value.match(/\d+(?:\.\d+)?/g);
+function parseSalaryRange(value: string) {
+  const trimmed = value.trim();
+  const matches = trimmed.match(/\d[\d,]*(?:\.\d+)?/g);
   if (!matches || matches.length < 2) {
     return { min: null, max: null };
   }
 
-  const minLpa = Number.parseFloat(matches[0]);
-  const maxLpa = Number.parseFloat(matches[1]);
+  const minValue = Number.parseFloat(matches[0].replace(/,/g, ""));
+  const maxValue = Number.parseFloat(matches[1].replace(/,/g, ""));
 
-  if (Number.isNaN(minLpa) || Number.isNaN(maxLpa)) {
+  if (Number.isNaN(minValue) || Number.isNaN(maxValue)) {
     return { min: null, max: null };
   }
 
+  if (/lpa|ctc/i.test(trimmed)) {
+    return {
+      min: Math.round(minValue * 100000),
+      max: Math.round(maxValue * 100000),
+    };
+  }
+
   return {
-    min: Math.round(minLpa * 100000),
-    max: Math.round(maxLpa * 100000),
+    min: Math.round(minValue),
+    max: Math.round(maxValue),
   };
 }
 
@@ -40,7 +48,7 @@ export async function POST() {
   }
 
   const rows = jobOpenings.map((job) => {
-    const salary = parseLpaRange(job.salaryRange);
+    const salary = parseSalaryRange(job.salaryRange);
     return {
       slug: job.slug,
       title: job.title,

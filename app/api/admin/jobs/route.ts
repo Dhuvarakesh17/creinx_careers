@@ -26,12 +26,12 @@ function mapExperience(value: string) {
   return value.toLowerCase();
 }
 
-function toInrFromLpa(value?: number) {
+function toInrAmount(value?: number) {
   if (typeof value !== "number" || Number.isNaN(value)) {
     return null;
   }
 
-  return Math.round(value * 100000);
+  return Math.round(value);
 }
 
 function asStringArray(value: unknown) {
@@ -60,8 +60,8 @@ export async function POST(request: Request) {
     experienceRange?: unknown;
     employmentType?: unknown;
     team?: unknown;
-    salaryMinLpa?: unknown;
-    salaryMaxLpa?: unknown;
+    salaryMinInr?: unknown;
+    salaryMaxInr?: unknown;
     openings?: unknown;
     statusTags?: unknown;
     summary?: unknown;
@@ -94,14 +94,14 @@ export async function POST(request: Request) {
   const team = String(body.team ?? "").trim();
   const openings = Number.parseInt(String(body.openings ?? "1"), 10);
   const summary = String(body.summary ?? "").trim();
-  const salaryMinLpa =
-    typeof body.salaryMinLpa === "number"
-      ? body.salaryMinLpa
-      : Number.parseFloat(String(body.salaryMinLpa ?? ""));
-  const salaryMaxLpa =
-    typeof body.salaryMaxLpa === "number"
-      ? body.salaryMaxLpa
-      : Number.parseFloat(String(body.salaryMaxLpa ?? ""));
+  const salaryMinInr =
+    typeof body.salaryMinInr === "number"
+      ? body.salaryMinInr
+      : Number.parseFloat(String(body.salaryMinInr ?? ""));
+  const salaryMaxInr =
+    typeof body.salaryMaxInr === "number"
+      ? body.salaryMaxInr
+      : Number.parseFloat(String(body.salaryMaxInr ?? ""));
   const statusTags = asStringArray(body.statusTags);
   const skills = asStringArray(body.skills);
   const aboutRole = asStringArray(body.aboutRole);
@@ -195,8 +195,8 @@ export async function POST(request: Request) {
       experience_range: experienceRange,
       employment_type: employmentType,
       team,
-      salary_min: toInrFromLpa(salaryMinLpa),
-      salary_max: toInrFromLpa(salaryMaxLpa),
+      salary_min: toInrAmount(salaryMinInr),
+      salary_max: toInrAmount(salaryMaxInr),
       description: summary,
       responsibilities,
       requirements: requiredQualifications,

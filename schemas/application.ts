@@ -4,6 +4,7 @@ export const MAX_RESUME_SIZE_BYTES = 5 * 1024 * 1024;
 
 export const applicationSchema = z.object({
   roleId: z.string().min(2, "Role is required"),
+  roleSlug: z.string().optional(),
   name: z.string().min(2, "Name is required"),
   email: z.email("Enter a valid email"),
   phone: z.string().min(7, "Phone is required"),

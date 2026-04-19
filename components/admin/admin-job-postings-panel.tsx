@@ -21,8 +21,8 @@ type NewJobFormState = {
   experienceRange: "0-1" | "1-3" | "3-5" | "5+";
   employmentType: "Full-time" | "Part-time" | "Internship" | "Contract";
   team: string;
-  salaryMinLpa: string;
-  salaryMaxLpa: string;
+  salaryMinInr: string;
+  salaryMaxInr: string;
   openings: string;
   statusTagsCsv: string;
   summary: string;
@@ -45,8 +45,8 @@ type CreateJobRequest = {
   experienceRange: "0-1" | "1-3" | "3-5" | "5+";
   employmentType: "Full-time" | "Part-time" | "Internship" | "Contract";
   team: string;
-  salaryMinLpa?: number;
-  salaryMaxLpa?: number;
+  salaryMinInr?: number;
+  salaryMaxInr?: number;
   openings: number;
   statusTags: string[];
   summary: string;
@@ -78,8 +78,8 @@ export function AdminJobPostingsPanel({
     experienceRange: "1-3",
     employmentType: "Full-time",
     team: "",
-    salaryMinLpa: "",
-    salaryMaxLpa: "",
+    salaryMinInr: "",
+    salaryMaxInr: "",
     openings: "1",
     statusTagsCsv: "New",
     summary: "",
@@ -123,8 +123,8 @@ export function AdminJobPostingsPanel({
 
     setIsSaving(true);
     try {
-      const salaryMin = Number.parseFloat(formState.salaryMinLpa);
-      const salaryMax = Number.parseFloat(formState.salaryMaxLpa);
+      const salaryMin = Number.parseFloat(formState.salaryMinInr);
+      const salaryMax = Number.parseFloat(formState.salaryMaxInr);
 
       const payloadBody: CreateJobRequest = {
         title,
@@ -136,8 +136,8 @@ export function AdminJobPostingsPanel({
         experienceRange: formState.experienceRange,
         employmentType: formState.employmentType,
         team: formState.team.trim(),
-        salaryMinLpa: Number.isNaN(salaryMin) ? undefined : salaryMin,
-        salaryMaxLpa: Number.isNaN(salaryMax) ? undefined : salaryMax,
+        salaryMinInr: Number.isNaN(salaryMin) ? undefined : salaryMin,
+        salaryMaxInr: Number.isNaN(salaryMax) ? undefined : salaryMax,
         openings: Math.max(1, Number.parseInt(formState.openings || "1", 10)),
         statusTags: parseCsv(formState.statusTagsCsv),
         summary: formState.summary.trim(),
@@ -181,8 +181,8 @@ export function AdminJobPostingsPanel({
         experienceRange: "1-3",
         employmentType: "Full-time",
         team: "",
-        salaryMinLpa: "",
-        salaryMaxLpa: "",
+        salaryMinInr: "",
+        salaryMaxInr: "",
         openings: "1",
         statusTagsCsv: "New",
         summary: "",
@@ -367,25 +367,25 @@ export function AdminJobPostingsPanel({
               className="field-solid px-3 py-2"
             />
             <input
-              value={formState.salaryMinLpa}
+              value={formState.salaryMinInr}
               onChange={(event) =>
                 setFormState((prev) => ({
                   ...prev,
-                  salaryMinLpa: event.target.value,
+                  salaryMinInr: event.target.value,
                 }))
               }
-              placeholder="Salary Min (LPA)"
+              placeholder="Salary Min (INR)"
               className="field-solid px-3 py-2"
             />
             <input
-              value={formState.salaryMaxLpa}
+              value={formState.salaryMaxInr}
               onChange={(event) =>
                 setFormState((prev) => ({
                   ...prev,
-                  salaryMaxLpa: event.target.value,
+                  salaryMaxInr: event.target.value,
                 }))
               }
-              placeholder="Salary Max (LPA)"
+              placeholder="Salary Max (INR)"
               className="field-solid px-3 py-2"
             />
             <input

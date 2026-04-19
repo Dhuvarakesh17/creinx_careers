@@ -6,7 +6,7 @@ import {
 } from "@/schemas/application";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { sendResendEmail } from "@/lib/resend";
-import { jobOpenings } from "@/data/jobs";
+import { resolvePublicJobForApplication } from "@/lib/public-jobs";
 
 export const runtime = "nodejs";
 
@@ -26,6 +26,7 @@ export async function POST(request: Request) {
 
     const parsed = applicationSchema.safeParse({
       roleId: formData.get("roleId"),
+      roleSlug: formData.get("roleSlug") ?? undefined,
       name: formData.get("name"),
       email: formData.get("email"),
       phone: formData.get("phone"),
@@ -67,7 +68,10 @@ export async function POST(request: Request) {
       return badRequest("Resume must be under 5MB.");
     }
 
-    const role = jobOpenings.find((job) => job.id === parsed.data.roleId);
+    const role = await resolvePublicJobForApplication({
+      roleId: parsed.data.roleId,
+      roleSlug: parsed.data.roleSlug,
+    });
     if (!role) {
       return badRequest("Selected role is invalid.");
     }

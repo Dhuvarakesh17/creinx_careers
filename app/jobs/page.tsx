@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { JobsEmptyState } from "@/components/jobs/jobs-empty-state";
 import { JobsFilterBar } from "@/components/jobs/jobs-filter-bar";
@@ -10,20 +10,24 @@ import { JobsPagination } from "@/components/jobs/jobs-pagination";
 import { JobsResultsToolbar } from "@/components/jobs/jobs-results-toolbar";
 import { JobsSearchBar } from "@/components/jobs/jobs-search-bar";
 import { PublicShell } from "@/components/public-shell";
-import { jobOpenings, type JobOpening } from "@/data/jobs";
 import { useJobFilters } from "@/hooks/use-job-filters";
 import { cn } from "@/lib/utils";
+import {
+  loadPublicJobs,
+  staticPublicJobs,
+  type PublicJob,
+} from "@/lib/public-jobs";
 
 type ViewMode = "grid" | "list";
 
-function matchesLocation(job: JobOpening, filter: string) {
+function matchesLocation(job: PublicJob, filter: string) {
   if (filter === "All") {
     return true;
   }
   return job.location === filter || job.workMode === filter;
 }
 
-function getExperienceLabel(level: JobOpening["experienceLevel"]) {
+function getExperienceLabel(level: PublicJob["experienceLevel"]) {
   if (level === "Fresher") {
     return "Fresher";
   }
@@ -53,6 +57,7 @@ export default function JobsPage() {
   const [sortBy, setSortBy] = useState("Newest First");
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [page, setPage] = useState(1);
+  const [jobs, setJobs] = useState<PublicJob[]>(staticPublicJobs);
   const [bookmarks, setBookmarks] = useState<string[]>(() => {
     if (typeof window === "undefined") {
       return [];
@@ -80,8 +85,22 @@ export default function JobsPage() {
     });
   }
 
+  useEffect(() => {
+    let active = true;
+
+    loadPublicJobs().then((items) => {
+      if (active) {
+        setJobs(items);
+      }
+    });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const filtered = useMemo(() => {
-    let items = [...jobOpenings];
+    let items = [...jobs];
 
     if (effectiveFilters.query.trim()) {
       const text = effectiveFilters.query.toLowerCase();
@@ -148,6 +167,7 @@ export default function JobsPage() {
     location,
     sortBy,
     workMode,
+    jobs,
   ]);
 
   const pageSize = 9;
@@ -325,7 +345,9 @@ export default function JobsPage() {
                       </div>
                     </div>
                   </div>
-                  <p className="mt-1 text-sm text-[#A8B8D8]">{job.team}</p>
+                  {job.team ? (
+                    <p className="mt-1 text-sm text-[#A8B8D8]">{job.team}</p>
+                  ) : null}
                   <div className="mt-3 flex flex-wrap gap-2 text-xs">
                     <span className="tag-badge px-2 py-1">{job.location}</span>
                     <span className="tag-badge px-2 py-1">{job.workMode}</span>
