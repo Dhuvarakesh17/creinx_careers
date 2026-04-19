@@ -56,7 +56,7 @@ const items: FoundationItem[] = [
   },
   {
     id: 4,
-    label: "WHY CREINX",
+    label: "DELIVERY MODEL",
     title: "Execution First",
     description:
       "We focus on outcomes, not noise. Every sprint and deliverable is shaped for business impact and measurable progress.",
@@ -64,7 +64,7 @@ const items: FoundationItem[] = [
   },
   {
     id: 5,
-    label: "WHY CREINX",
+    label: "WORKING STYLE",
     title: "Transparent Partnership",
     description:
       "You get clear timelines, honest trade-offs, and full visibility across design, development, and deployment.",
@@ -72,7 +72,7 @@ const items: FoundationItem[] = [
   },
   {
     id: 6,
-    label: "WHY CREINX",
+    label: "ARCHITECTURE",
     title: "Built To Scale",
     description:
       "From MVP to production growth, our architecture choices are made to support reliability, security, and long-term evolution.",
@@ -80,7 +80,7 @@ const items: FoundationItem[] = [
   },
   {
     id: 7,
-    label: "WHY CREINX",
+    label: "CRAFT + SYSTEMS",
     title: "Design + Engineering",
     description:
       "We blend product thinking, premium UI, and robust engineering so your platform feels great and performs under pressure.",

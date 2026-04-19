@@ -275,17 +275,6 @@ export default async function JobDetailPage({
 
             <section>
               <h3 className="text-lg font-semibold text-[#F0F4FF]">
-                Nice to have
-              </h3>
-              <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-[#A8B8D8]">
-                {job.niceToHave.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </section>
-
-            <section>
-              <h3 className="text-lg font-semibold text-[#F0F4FF]">
                 Technical skills required
               </h3>
               <div className="mt-3 flex flex-wrap gap-2">
@@ -306,17 +295,6 @@ export default async function JobDetailPage({
                   <li key={step}>{step}</li>
                 ))}
               </ol>
-            </section>
-
-            <section>
-              <h3 className="text-lg font-semibold text-[#F0F4FF]">
-                Perks & benefits
-              </h3>
-              <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-[#A8B8D8]">
-                {job.perks.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
             </section>
           </article>
 
