@@ -257,16 +257,18 @@ export default function JobsPage() {
                 : "grid grid-cols-1",
             )}
           >
-            {pagedJobs.map((job) => {
+            {pagedJobs.map((job, cardIndex) => {
               const bookmarked = bookmarks.includes(job.slug);
               const experienceText =
                 job.experienceLevel === "Fresher"
                   ? "Fresher"
                   : `Experience: ${getExperienceLabel(job.experienceLevel)}`;
+              const previewSkills = job.skills.slice(0, 3);
               return (
                 <article
                   key={job.id}
-                  className="glass-card cursor-pointer p-5 text-[#F0F4FF] transition hover:-translate-y-1 hover:border-[#2563EB] hover:shadow-[0_0_20px_rgba(37,99,235,0.14)]"
+                  className="glass-card jobs-card-reveal cursor-pointer p-5 text-[#F0F4FF] transition hover:-translate-y-1 hover:border-[#2563EB] hover:shadow-[0_0_20px_rgba(37,99,235,0.14)]"
+                  style={{ animationDelay: `${cardIndex * 70}ms` }}
                   onClick={(event) => {
                     if (shouldIgnoreCardNavigation(event.target)) {
                       return;
@@ -289,17 +291,29 @@ export default function JobsPage() {
                       {job.title}
                     </h3>
                     <div className="flex flex-col items-end gap-1">
-                      <div className="flex items-center gap-3">
-                        <span
-                          className={cn(
-                            "inline-flex shrink-0 rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap",
-                            job.department === "Technical"
-                              ? "bg-blue-500/20 text-blue-200"
-                              : "bg-emerald-500/20 text-emerald-200",
-                          )}
-                        >
-                          {job.department}
-                        </span>
+                      <div className="flex items-start gap-3">
+                        <div className="flex flex-col items-end gap-1">
+                          <span
+                            className={cn(
+                              "inline-flex shrink-0 rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap",
+                              job.department === "Technical"
+                                ? "bg-blue-500/20 text-blue-200"
+                                : "bg-emerald-500/20 text-emerald-200",
+                            )}
+                          >
+                            {job.department}
+                          </span>
+                          <span
+                            className={cn(
+                              "jobs-chip-reveal inline-flex shrink-0 rounded-full px-3 py-1 text-xs font-semibold whitespace-nowrap",
+                              job.department === "Technical"
+                                ? "bg-blue-500/15 text-blue-200"
+                                : "bg-emerald-500/15 text-emerald-200",
+                            )}
+                          >
+                            {experienceText}
+                          </span>
+                        </div>
                         <button
                           type="button"
                           onClick={() => toggleBookmark(job.slug)}
@@ -315,16 +329,19 @@ export default function JobsPage() {
                   <div className="mt-3 flex flex-wrap gap-2 text-xs">
                     <span className="tag-badge px-2 py-1">{job.location}</span>
                     <span className="tag-badge px-2 py-1">{job.workMode}</span>
-                    <span className="tag-badge px-2 py-1">
-                      {experienceText}
-                    </span>
                   </div>
                   <p className="mt-3 text-sm text-[#6B7FA3]">
                     {job.salaryRange}
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {job.skills.slice(0, 3).map((skill) => (
-                      <span key={skill} className="tag-badge px-2 py-1 text-xs">
+                    {previewSkills.map((skill, skillIndex) => (
+                      <span
+                        key={skill}
+                        className="tag-badge jobs-chip-reveal px-2 py-1 text-xs"
+                        style={{
+                          animationDelay: `${cardIndex * 70 + 120 + skillIndex * 55}ms`,
+                        }}
+                      >
                         {skill}
                       </span>
                     ))}

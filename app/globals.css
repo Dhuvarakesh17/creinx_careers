@@ -180,3 +180,33 @@
 .about-logo-bounce {
   animation: aboutLogoBounce 3.2s ease-in-out infinite;
 }
+
+@keyframes jobsCardReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes jobsChipReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.jobs-card-reveal {
+  animation: jobsCardReveal 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.jobs-chip-reveal {
+  animation: jobsChipReveal 380ms ease-out both;
+}

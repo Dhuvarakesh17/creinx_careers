@@ -42,28 +42,28 @@ export function HomeCategories() {
               key={sector}
               maxTilt={8}
               enableShine
-              className="glass-card p-6"
+              className="glass-card min-h-56 p-7 md:min-h-64 md:p-8 lg:min-h-72 lg:p-9"
             >
               <div className="flex items-start justify-between gap-4">
-                <h3 className="mt-3 font-(family-name:--font-heading) text-2xl text-[#F0F4FF]">
+                <h3 className="mt-4 font-(family-name:--font-heading) text-[34px] leading-tight text-[#F0F4FF]">
                   {sectorMeta[sector].title}
                 </h3>
-                <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[#1E3A5F] bg-[rgba(37,99,235,0.12)] text-[#93C5FD]">
-                  <SectorIcon size={20} aria-hidden="true" />
+                <span className="inline-flex h-13 w-13 shrink-0 items-center justify-center rounded-2xl border border-[#1E3A5F] bg-[rgba(37,99,235,0.12)] text-[#93C5FD]">
+                  <SectorIcon size={24} aria-hidden="true" />
                 </span>
               </div>
 
-              <div className="mt-4 flex flex-col items-start gap-2">
+              <div className="mt-6 flex flex-col items-start gap-3">
                 <p className="inline-flex items-center gap-2 text-[#93C5FD]">
-                  <BriefcaseBusiness size={16} aria-hidden="true" />
+                  <BriefcaseBusiness size={18} aria-hidden="true" />
                   {jobs.length} openings
                 </p>
                 <Link
                   href="/jobs"
-                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#93C5FD]"
+                  className="inline-flex items-center gap-2 text-base font-semibold text-[#93C5FD]"
                 >
                   Browse roles
-                  <ArrowRight size={16} aria-hidden="true" />
+                  <ArrowRight size={18} aria-hidden="true" />
                 </Link>
               </div>
             </TiltCard>

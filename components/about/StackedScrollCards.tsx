@@ -15,7 +15,7 @@ type CardData = {
   description: string;
   tags: string[];
   background: string;
-  visual: "code" | "phone" | "neural" | "chart";
+  visual: "code" | "phone" | "neural" | "chart" | "support";
 };
 
 const cards: CardData[] = [
@@ -59,6 +59,16 @@ const cards: CardData[] = [
     background: "#0D1B2A",
     visual: "chart",
   },
+  {
+    number: "05",
+    label: "05 OPERATIONS",
+    title: "IT Support & Management",
+    description:
+      "Reliable IT support and structured management to keep teams productive secure and always operational.",
+    tags: ["IT Support", "Management", "Help Desk", "Monitoring"],
+    background: "#0B1324",
+    visual: "support",
+  },
 ];
 
 const visualImageMap: Record<
@@ -84,6 +94,11 @@ const visualImageMap: Record<
     src: "/digital-marketing.jpg",
     alt: "Digital marketing analytics concept",
     badge: "Growth",
+  },
+  support: {
+    src: "/IT-Support.jpg",
+    alt: "IT support and management team",
+    badge: "Support",
   },
 };
 
